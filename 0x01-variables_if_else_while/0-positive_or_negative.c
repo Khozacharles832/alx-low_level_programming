@@ -2,7 +2,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
-/**Main - prints if input is positive, negative or zero
+/**
+ * Main - Program to check if n is 0 or less
 * Return: Always 0(success)
 */
 int main(void)
