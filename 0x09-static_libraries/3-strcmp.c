@@ -1,6 +1,3 @@
-3-strcmp.c
-
-
 #include "main.h"
 /**
  * _strcmp - compare string values
