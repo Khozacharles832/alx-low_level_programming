@@ -10,13 +10,13 @@ int main(void)
 {
 	int r;
 	
-	r = _factorial(1);
+	r = factorial(1);
 	printf("%d\n", r);
-	r = _factorial(5);
+	r = factorial(5);
 	printf("%d\n", r);
-	r =_factorial(10);
+	r =factorial(10);
 	printf("%d\n", r);
-	r = _factorial(-1024);
+	r = factorial(-1024);
 	printf("%d\n", r);
 	return (0);
 }
