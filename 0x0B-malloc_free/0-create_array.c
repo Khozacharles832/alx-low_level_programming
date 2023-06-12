@@ -5,6 +5,8 @@
 /**
  * create_array - creates an array with specified char and size
  * @prt - the address of the allocated memory
+ * @size - the size to allocated
+ * @c - the initialiser
  *
  * Return: the address of the new memory
  */
@@ -13,8 +15,8 @@ char *create_array(unsigned int size, char c)
 	unsigned int i;
 	char *ptr = (char*)malloc(size * sizeof(char));
 
-	if (ptr == 0)
-		return (0);
+	if (size ==  0)
+		return (NULL);
 	for (i = 0; i < size; i++)
 	{
 		ptr[i] = c;
