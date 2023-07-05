@@ -4,7 +4,7 @@
  * free_listint - frees a linked list
  * @head: the pointer to the list
  *
- * Description: A function that frees the memory allocated for 
+ * Description: A function that frees the memory allocated for
  * a linked list
  *
  * Return: Nothing
