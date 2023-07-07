@@ -1,7 +1,7 @@
 #include "main.h"
 
 /**
- * get_bet - gets a bit at given index
+ * get_bit - gets a bit at given index
  * @n: the number of get
  * @index: the index
  *
