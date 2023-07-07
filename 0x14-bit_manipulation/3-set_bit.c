@@ -3,6 +3,7 @@
 /**
  * set_bit - sets a bit to 1 at a given index
  * @n: a pointer to the number
+ * @index: the position to set bit at
  *
  * Description: a function that sets a bit to 1
  *
@@ -10,12 +11,15 @@
  */
 int set_bit(unsigned long int *n, unsigned int index)
 {
-	if (index > 64)
-		return (-1);
-	if (!(*n >> index) & 1)
+	unsigned long int mask;
+
+	if (index >= sizeof(unsigned long int) * 8)
 	{
-		*n += 1 << index;
-		return (1);
+		return (-1);
 	}
-	return (-1);
+
+
+	mask = 1UL << index;
+	*n |= mask;
+	return (1);
 }
