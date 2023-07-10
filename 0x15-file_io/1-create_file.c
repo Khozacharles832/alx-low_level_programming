@@ -4,7 +4,7 @@
 /**
  * create_file - function that creates a new file
  * @filename: name of file to create
- * @text-content: the text to add to new file
+ * @text_content: the text to add to new file
  *
  * Description: a function that creates a new file
  *
