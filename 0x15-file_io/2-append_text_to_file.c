@@ -10,6 +10,7 @@
 int append_text_to_file(const char *filename, char *text_content)
 {
 	int name, i;
+
 	i = 0;
 
 	if (filename == NULL)
@@ -22,7 +23,7 @@ int append_text_to_file(const char *filename, char *text_content)
 	}
 	name = open(filename, O_WRONLY | O_APPEND);
 	if (name == -1)
-		return -1;
+		return (-1);
 	write(name, text_content, i);
 	return (1);
 }
