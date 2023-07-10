@@ -1,4 +1,6 @@
 #include "main.h"
+#include <stdlib.h>
+#include <stdio.h>
 
 /**
  * read_textfile - read a file and prints it to stdout
@@ -12,39 +14,41 @@
  */
 ssize_t read_textfile(const char *filename, size_t letters)
 {
-	int file_descriptor, error, bytes_read;
-	char *buffer;
+	int fd;
+	char *buf;
+	ssize_t rd, err;
 
-	file_descriptor = error = bytes_read;
-
-	if (!filename || letters)
+	if (filename == NULL)
+		return (0);
+	fd = open(filename, O_RDONLY);
+	if (fd < 0)
 		return (0);
 
-	file_descriptor = open(filename, O_RDONLY);
-	if (file_descriptor < 0)
-		return (0);
-
-	buffer = malloc(sizeof(char) * letters + 1);
-	if (!buffer)
-		return (0);
-
-	bytes_read = read(file_descriptor, buffer, letters);
-	if (bytes_read < 0)
+	buf = malloc(sizeof(char) * (letters + 1));
+	if (buf == NULL)
 	{
-		free(buffer);
-		return (0);
-	}
-	buffer[letters] = '\0';
-
-	error = write(STDOUT_FILENO, buffer, bytes_read);
-	if (error <= 0)
-	{
-		free(buffer);
+		close(fd);
 		return (0);
 	}
 
-	free(buffer);
-	close(file_descriptor);
+	rd = read(fd, buf, letters);
+	if (rd < 1)
+	{
+		free(buf);
+		close(fd);
+		return (0);
+	}
+	buf[rd] = '\0';
 
-	return (0);
+	err = write(STDOUT_FILENO, buf, rd);
+	if (err < 0 || err != rd)
+	{
+		free(buf);
+		close(fd);
+		return (0);
+	}
+	free(buf);
+	close(fd);
+
+	return (err);
 }
