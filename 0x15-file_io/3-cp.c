@@ -1,4 +1,8 @@
 #include "main.h"
+#define BUFFER_SIZE 1024
+
+static void copy_writer(char *file, int fd, char *buf, int len);
+static size_t file_reader(char *file, char **buf, int fd);
 
 /**
  * main - program to copy one file to another
@@ -12,57 +16,83 @@
  */
 int main(int argc, char **argv)
 {
-	char buffer_size[1024];
-	int first, second;
-	int source_file, destination_file;
+	int descriptor0, descriptor1, len, error;
+	char *buf, *file_from, *file_to;
 
-	first = 1024;
-	second = 0;
-
+	buf = NULL;
+	len = 1;
 	if (argc != 3)
-	{	
-		dprintf(STDERR_FILENO, "Usage: cp file_from file_to\n");
+	{
+		dprintf(STDERR_FILENO, "Usage: cp file_from file_to \n");
 		exit(97);
 	}
-	source_file = open(argv[1], O_RDONLY);
-	if (source_file == -1)
+	file_from = argv[1];
+	file_to = argv[2];
+	descriptor0 = open(file_from, O_RDONLY);
+	descriptor1 = open(file_to, O_CREAT | O_WRONLY | O_TRUNC, 0664);
+	while (len > 0)
 	{
-		dprintf(STDERR_FILENO, "Error: can't read from file %s\n", argv[1]);
+		len = file_reader(file_from, &buf, descriptor0);
+		if (!len)
+			break;
+		copy_writer(file_to, descriptor1, buf, len);
+	}
+	free(buf);
+	error = close(descriptor0);
+	if (error < 0)
+	{
+		dprintf(STDERR_FILENO, "Error: can't close fd %d\n", descriptor0);
+		exit(100);
+	}
+	error = close(descriptor1);
+	if (error < 0)
+	{
+		dprintf(STDERR_FILENO, "Error: can't close fd %d\n", descriptor1);
+		exit(100);
+	}
+	return (0);
+}
+
+static size_t file_reader(char *file, char **buf, int fd)
+{
+	int _len;
+
+	if(fd < 0)
+	{
+		dprintf(STDERR_FILENO, "Error: can't read from file %s\n", file);
 		exit(98);
 	}
-	destination_file = open(argv[2], O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR |
-			S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH);
-	if (destination_file == -1)
+
+	if (!(*buf))
+		*buf = malloc(sizeof(char) * BUFFER_SIZE);
+
+	if (!(*buf))
 	{
-		dprintf(STDERR_FILENO, "Error: can't write to %s\n", argv[2]);
-		close(destination_file);
+		dprintf(STDERR_FILENO, "Error: can't read from file %s\n", file);
+		exit(98);
+	}
+	_len = read (fd, *buf, BUFFER_SIZE);
+	if (_len < 0)
+	{
+		free(*buf);
+		dprintf(STDERR_FILENO, "Error: can't read from file %s\n", file);
+		exit(98);
+	}
+	return (_len);
+}
+
+static void copy_writer(char *file, int fd, char *buf, int len)
+{
+	if (fd < 0 || buf)
+	{
+		free(buf);
+		dprintf(STDERR_FILENO, "Error: can't write to %s\n", file);
 		exit(99);
 	}
-	while (first == 1024)
+	if (write(fd, buf, len) < 0)
 	{
-		first = read(source_file, buffer_size, 1024);
-		if (first == -1)
-		{
-			dprintf(STDERR_FILENO, "Error: can't read from file %s\n", argv[1]);
-			exit(98);
-		}
-		second = write(destination_file, buffer_size, first);
-		if (second < first)
-		{
-			dprintf(STDERR_FILENO, "Error: can't write to %s\n", argv[2]);
-			exit(99);
-		}
+		free(buf);
+		dprintf(STDERR_FILENO, "Error: can't write to %s\n", file);
+		exit(99);
 	}
-	if (close(source_file) == -1)
-	{
-		dprintf(STDERR_FILENO, "Error: can't close fd %d\n", source_file);
-		exit(100);
-	}
-	if (close(destination_file) == -1)
-	{	
-		dprintf(STDERR_FILENO, "Error: can't close fd %d\n", destination_file);
-		exit(100);
-	}
-
-	return (0);
 }
