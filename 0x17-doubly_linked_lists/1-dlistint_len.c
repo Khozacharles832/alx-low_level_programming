@@ -4,7 +4,7 @@
  * dlistint_len - returns the number of nodes in a linked list
  * @h: the head pointer
  *
- * Returns: the number of nodes
+ * Return: the number of nodes
  */
 size_t dlistint_len(const dlistint_t *h)
 {
