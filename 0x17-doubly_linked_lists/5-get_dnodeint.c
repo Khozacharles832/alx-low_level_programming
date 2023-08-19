@@ -3,7 +3,7 @@
 /**
  * get_dnodeint_at_index - get node at index
  * @head: the head node
- * index: the index
+ * @index: the index
  *
  * Return: the new nodes address
  */
